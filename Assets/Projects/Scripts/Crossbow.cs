@@ -12,6 +12,7 @@ public class Crossbow : MonoBehaviour
     Rigidbody currentArrow;
     int i = 0;
     public float firingStrength;
+    public AudioSource arrowShootingSFX;
     private void Start()
     {
         ResetCrossBow();
@@ -95,7 +96,7 @@ public class Crossbow : MonoBehaviour
         currentArrow.gameObject.GetComponent<TrailRenderer>().enabled = true;
 
         currentArrow.AddForce(forceDirection * firingStrength, ForceMode.Impulse);
-
+        arrowShootingSFX.Play();
         currentArrow = null;
 
         Invoke(nameof(SpawnArrow), 1f);
