@@ -1,3 +1,4 @@
+using Oculus.Interaction;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -70,27 +71,40 @@ public class Crossbow : MonoBehaviour
     }
     public void SpawnArrow()
     {
-        if (i > 4)
+        if (i >= 4)
             return;
         i++;
         currentArrow = arrows[i];
         currentArrow.gameObject.SetActive(true);
+
     }
 
     [ContextMenu("Shoot")]
     public void Shoot()
     {
+        if (!GameManager.instance.isGameStarted)
+            return;
+
         if (currentArrow == null)
             return;
 
         var forceDirection = currentArrow.transform.up;
         forceDirection.Normalize();
-        forceDirection *= firingStrength;
+
         currentArrow.useGravity = true;
-        currentArrow.AddForce(forceDirection, ForceMode.Impulse);
+        currentArrow.gameObject.GetComponent<TrailRenderer>().enabled = true;
+
+        currentArrow.AddForce(forceDirection * firingStrength, ForceMode.Impulse);
+
         currentArrow = null;
 
         Invoke(nameof(SpawnArrow), 1f);
+
+        if (i >= 4)
+        {
+            print("GameOver");
+            ScoreManager.instance.UpdateFinalReset();
+        }
     }
 
 

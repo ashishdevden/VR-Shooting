@@ -7,6 +7,7 @@ public class ScoreManager : MonoBehaviour
 {
     public static ScoreManager instance;
     public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI finalResesult;
     private void Awake()
     {
         if (instance == null)
@@ -38,12 +39,35 @@ public class ScoreManager : MonoBehaviour
 
     public void ResetScore()
     {
+        CancelInvoke(nameof(_UpdateFinalReset));
         score = 0;
+        finalResesult.text = "";
     }
 
     public void AddScore(int val)
     {
         score += val;
+        if (score > 15)
+        {
+            finalResesult.text = "YOU WIN";
+        }
+    }
+
+    public void UpdateFinalReset()
+    {
+        Invoke(nameof(_UpdateFinalReset), 0.7f);
+    }
+
+    void _UpdateFinalReset()
+    {
+        if (score > 15)
+        {
+            finalResesult.text = "YOU WIN";
+        }
+        else 
+        {
+            finalResesult.text = "YOU Lost";
+        }
     }
 
     public int CalculateScore(float dist)
