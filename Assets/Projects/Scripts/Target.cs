@@ -25,6 +25,9 @@ public class Target : MonoBehaviour
             collision.gameObject.GetComponent<Rigidbody>().useGravity = false;
             collision.rigidbody.velocity = Vector3.zero;
             collision.rigidbody.angularVelocity = Vector3.zero;
+            collision.rigidbody.freezeRotation = true;
+            collision.rigidbody.isKinematic = true;
+
             collision.transform.SetParent(transform, true);
         }
     }

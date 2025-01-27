@@ -49,8 +49,9 @@ public class Crossbow : MonoBehaviour
             isCrossBowAttachedToTheHand = !isCrossBowAttachedToTheHand;
         }
 
-        if (OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger))
+        if (OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger))
         {
+            print("Shoot");
             Shoot();
         }
     }
