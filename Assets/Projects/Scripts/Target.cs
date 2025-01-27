@@ -7,10 +7,10 @@ public class Target : MonoBehaviour
 {
     public Collider targetCollider;
 
-
+    ScoreManager scoreManager;
     void Start()
     {
-
+        scoreManager = ScoreManager.instance;
     }
 
 
@@ -20,33 +20,10 @@ public class Target : MonoBehaviour
         if (collision.collider.tag == "Arrow")
         {
             float dist = Vector3.Distance(collision.contacts[0].point, transform.position);
-            print(dist);
-            CalculateScore(dist);
+            int val = scoreManager.CalculateScore(dist);
+            scoreManager.AddScore(val);
             collision.gameObject.GetComponent<Rigidbody>().useGravity = false;
             collision.transform.SetParent(transform, true);
-
-
         }
-    }
-
-    public int CalculateScore(float dist)
-    {
-        if (dist >= 0.325f)
-        {
-            return 1;
-        }
-        else if (dist >= 0.15f)
-        {
-            return 3;
-        }
-        else
-        {
-            return 5;
-        }
-    }
-
-    void Update()
-    {
-
     }
 }
