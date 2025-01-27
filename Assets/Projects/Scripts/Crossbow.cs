@@ -19,6 +19,9 @@ public class Crossbow : MonoBehaviour
 
     public void ResetCrossBow()
     {
+
+        CancelInvoke(nameof(Shoot));
+
         i = -1;
         for (int i = 0; i < arrows.Count; i++)
         {
@@ -46,7 +49,7 @@ public class Crossbow : MonoBehaviour
             isCrossBowAttachedToTheHand = !isCrossBowAttachedToTheHand;
         }
 
-        if (OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger)) 
+        if (OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger))
         {
             Shoot();
         }
@@ -66,6 +69,8 @@ public class Crossbow : MonoBehaviour
     }
     public void SpawnArrow()
     {
+        if (i > 4)
+            return;
         i++;
         currentArrow = arrows[i];
         currentArrow.gameObject.SetActive(true);
@@ -79,8 +84,12 @@ public class Crossbow : MonoBehaviour
 
         var forceDirection = currentArrow.transform.up;
         forceDirection.Normalize();
-        forceDirection*=firingStrength;
+        forceDirection *= firingStrength;
+        currentArrow.useGravity = true;
         currentArrow.AddForce(forceDirection, ForceMode.Impulse);
+        currentArrow = null;
+
+        Invoke(nameof(SpawnArrow), 1f);
     }
 
 

@@ -23,6 +23,8 @@ public class Target : MonoBehaviour
             int val = scoreManager.CalculateScore(dist);
             scoreManager.AddScore(val);
             collision.gameObject.GetComponent<Rigidbody>().useGravity = false;
+            collision.rigidbody.velocity = Vector3.zero;
+            collision.rigidbody.angularVelocity = Vector3.zero;
             collision.transform.SetParent(transform, true);
         }
     }
