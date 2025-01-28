@@ -17,7 +17,7 @@ public class Target : MonoBehaviour
 
         if (targetCollider == null)
         {
-            EditorGUIUtility.PingObject(this.gameObject);
+            //EditorGUIUtility.PingObject(this.gameObject);
 
             print("Target Collider is null");
         }
@@ -27,7 +27,7 @@ public class Target : MonoBehaviour
 
             if (targetCollider == null)
             {
-                EditorGUIUtility.PingObject(this.gameObject);
+                //EditorGUIUtility.PingObject(this.gameObject);
             }
 
             targetCollider.enabled = true;
