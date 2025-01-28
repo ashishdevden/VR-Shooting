@@ -1,6 +1,7 @@
 using Oculus.Interaction;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class Crossbow : MonoBehaviour
@@ -13,9 +14,12 @@ public class Crossbow : MonoBehaviour
     int i = 0;
     public float firingStrength;
     public AudioSource arrowShootingSFX;
+    public TextMeshProUGUI remaingArrowTexts;
+    public Transform weponHolder;
     private void Start()
     {
         ResetCrossBow();
+        GameManager.instance.onGameResets += ResetCrossBow;
 
     }
 
@@ -27,15 +31,26 @@ public class Crossbow : MonoBehaviour
         i = -1;
         for (int i = 0; i < arrows.Count; i++)
         {
+            arrows[i].transform.SetParent(crossBow.transform, true);
             arrows[i].gameObject.SetActive(false);
             arrows[i].position = new Vector3(0, 0.9f, 0.25f);
             arrows[i].useGravity = false;
             arrows[i].velocity = Vector3.zero;
+            arrows[i].isKinematic = false;
+
             arrows[i].angularVelocity = Vector3.zero;
 
         }
+        ShowRemaingArrowsText();
         SpawnArrow();
+
     }
+
+    private void ShowRemaingArrowsText()
+    {
+        remaingArrowTexts.text = "Remain Arrows :" + (5 - i - 1).ToString();
+    }
+
     private void Update()
     {
         if (OVRInput.GetDown(OVRInput.Button.One))
@@ -51,7 +66,7 @@ public class Crossbow : MonoBehaviour
             isCrossBowAttachedToTheHand = !isCrossBowAttachedToTheHand;
         }
 
-        if (OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger))
+        if (OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger) && isCrossBowAttachedToTheHand)
         {
             print("Shoot");
             Shoot();
@@ -67,6 +82,9 @@ public class Crossbow : MonoBehaviour
 
     public void UngrabCrossBow()
     {
+        crossBow.transform.SetParent(weponHolder, true);
+        crossBow.transform.localPosition = new Vector3(0, 1.4f, 0);
+        crossBow.transform.localEulerAngles = Vector3.zero;
 
 
     }
@@ -93,11 +111,13 @@ public class Crossbow : MonoBehaviour
         forceDirection.Normalize();
 
         currentArrow.useGravity = true;
+        currentArrow.AddForce(forceDirection * firingStrength, ForceMode.Impulse);
+
+        arrowShootingSFX.Play();
         currentArrow.gameObject.GetComponent<TrailRenderer>().enabled = true;
 
-        currentArrow.AddForce(forceDirection * firingStrength, ForceMode.Impulse);
-        arrowShootingSFX.Play();
         currentArrow = null;
+        ShowRemaingArrowsText();
 
         Invoke(nameof(SpawnArrow), 1f);
 
@@ -108,6 +128,11 @@ public class Crossbow : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        GameManager.instance.onGameResets -= ResetCrossBow;
+
+    }
 
 
 }
